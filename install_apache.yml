@@ -7,7 +7,9 @@
     - name: update
       apt:
         update-cache: yes
-
+- hosts: web
+  become: true
+  tasks:
     - name: install apache2 package
       apt:
         name: apache2
@@ -16,4 +18,11 @@
     - name: install php
       apt:
         name: libapache2-mod-php
+        state: latest
+- hosts: db
+  become: true
+  tasks:
+    - name: Install mariadb
+      apt:
+        name: mariadb-server
         state: latest
