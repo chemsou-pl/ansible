@@ -3,19 +3,21 @@
 - hosts: all
   become: true
   tasks:
-
     - name: update
+      tags: always
       apt:
         update-cache: yes
 - hosts: web
   become: true
   tasks:
     - name: install apache2 package
+      tags: apache
       apt:
         name: apache2
         state: latest
 
     - name: install php
+      tags: mariadb
       apt:
         name: libapache2-mod-php
         state: latest
@@ -23,6 +25,14 @@
   become: true
   tasks:
     - name: Install mariadb
+      tags: samba
       apt:
         name: mariadb-server
+        state: latest
+- hosts: file
+  become: true
+  tasks:
+    - name: Install Samba
+      apt:
+        name: samba
         state: latest
