@@ -9,83 +9,17 @@
         update-cache: yes
 - hosts: all
   become: true
-  tasks:
-    - name: create user
-      tags: always
-      user:
-        name: simone
-        groups: root
-
-    - name: add ssh key
-      tags: always
-      authorized_key:
-        user: simone
-        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIItpB8Rtj3PDe4iNXAid1Ucj5GDfV+k/BDr8rDXD7AWe Ansible"
-    - name: add sudoers for simone
-      tags: always
-      copy:
-        src: /home/ansible/ansible/files/sudoer_simone
-        dest: /etc/sudoers.d/simone
-        owner: root
-        group: root
-        mode: 0440
-
-- hosts: all
-  become: true
-  tasks:
-    - name:  install unzip
-      package:
-        name: unzip
-    - name: install terraforme
-      unarchive:
-        src: https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip
-        dest: /usr/local/bin
-        remote_src: yes
-        mode: 0755
-        owner: root
-        group: root
-
+  roles:
+    - base
 - hosts: web
   become: true
-  tasks:
-    - name: install apache2 package
-      tags: apache, apache2
-      apt:
-        name: apache2
-        state: latest
-
-    - name: install php
-      tags: apache, httpd
-      apt:
-        name: libapache2-mod-php
-        state: latest
-    - name: start apache
-      tags: apache, apache2
-      service:
-        name: apache2
-        state: started
-        enabled: yes
-    - name: copy html files
-      tags: apache, apache2
-      copy:
-        src: /home/ansible/ansible/files/default_site.html
-        dest: /var/www/html/index.html
-        owner: root
-        group: root
-        mode: 0644
+  roles:
+    - web
 - hosts: db
   become: true
-  tasks:
-    - name: Install mariadb
-      tags: mariadb
-      apt:
-        name: mariadb-server
-        state: latest
+  roles:
+    - db
 - hosts: file
   become: true
-  tasks:
-    - name: Install Samba
-      tags: samba
-      apt:
-        name: samba
-        state: latest
+  roles:
+    - file
