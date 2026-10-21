@@ -11,21 +11,29 @@
   become: true
   tasks:
     - name: install apache2 package
-      tags: apache
+      tags: apache, apache2
       apt:
         name: apache2
         state: latest
 
     - name: install php
-      tags: mariadb
+      tags: apache, httpd
       apt:
         name: libapache2-mod-php
         state: latest
+    - name: copy html files
+      tags: apache, apache2
+      copy:
+        src: /home/ansible/ansible/files/default_site.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0644
 - hosts: db
   become: true
   tasks:
     - name: Install mariadb
-      tags: samba
+      tags: mariadb
       apt:
         name: mariadb-server
         state: latest
@@ -33,6 +41,7 @@
   become: true
   tasks:
     - name: Install Samba
+      tags: samba
       apt:
         name: samba
         state: latest
